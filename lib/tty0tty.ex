@@ -55,7 +55,7 @@ defmodule TTY0TTY do
   a device there would fail without elevated privileges. Consider opening
   devices in other places with user access, such as `/tmp` or `/mnt`
   """
-  @spec open(String.t(), keyword()) :: Supervisor.on_start()
+  @spec open(String.t(), keyword()) :: :ok
   def open(dev_path, opts \\ []) do
     twin = dev_path <> "-twin"
     tty0tty = Application.app_dir(:tty0tty, ["priv", "tty0tty"])
@@ -64,8 +64,9 @@ defmodule TTY0TTY do
     sup_opts = [strategy: :one_for_one, name: via_name(dev_path)]
 
     case Supervisor.start_link([{MuonTrap.Daemon, cmd}], sup_opts) do
-      {:error, {:already_started, p}} -> {:ok, p}
-      result -> result
+      {:error, {:already_started, _p}} -> :ok
+      {:ok, _} -> :ok
+      result -> raise "Failed to open tty0tty! - #{inspect(result)}"
     end
   end
 
