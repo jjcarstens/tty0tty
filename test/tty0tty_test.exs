@@ -2,7 +2,11 @@ defmodule TTY0TTYTest do
   use ExUnit.Case
   doctest TTY0TTY
 
-  test "greets the world" do
-    assert TTY0TTY.hello() == :world
+  test "can open a port" do
+    port = "/tmp/tty0tty-testing"
+    assert :ok = TTY0TTY.open(port)
+
+    assert :ok = File.write(port, "Howdy!")
+    assert :ok = File.write([port, "-twin"], "Partner!")
   end
 end
