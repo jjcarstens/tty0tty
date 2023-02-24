@@ -3,7 +3,7 @@ defmodule TTY0TTY.Application do
 
   use Application
 
-  @impl true
+  @impl Application
   def start(_type, _args) do
     children = [
       {Registry, keys: :unique, name: Devices}

@@ -1,20 +1,54 @@
 # TTY0TTY
 
-**TODO: Add description**
+Elixir port for [`tty0tty` null modem emulator](https://github.com/freemed/tty0tty)
 
-## Installation
+## Use
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `tty0tty` to your list of dependencies in `mix.exs`:
+This library is almost exclusively for testing purposes. `tty0tty` creates 2
+pseudo-ttys that are connected together allowing you to run unit tests which
+use serial ports (like [`Circuits.UART`](https://github.com/elixir-circuits/circuits_uart))
+without the need for external hardware of adapters.
 
 ```elixir
-def deps do
-  [
-    {:tty0tty, "~> 0.1.0"}
-  ]
+defmodule SerialTest do
+  use ExUnit.Case, async: true
+
+  test "can open a serial port" do
+    {:ok, uart} = Circuits.UART.start_link()
+
+    port_name = "/tmp/dummy1"
+
+    # Open serial port before use
+    {:ok, _port_sup} = TTY0TTY.open(port_name)
+
+    assert :ok = Cicuits.UART.open(uart, port_name)
+  end
 end
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/tty0tty>.
+Under the hood, `TTY0TTY.open/2` opens 2 devices (`<port_name>`, and
+`<port_name>-twin`) and connects their TX <-> RX to emulate the serial
+connection. This allows you to also verifying reading serial data by sending
+data to the connected twin port:
+
+
+```elixir
+defmodule SerialTest do
+  use ExUnit.Case, async: true
+
+  test "can read a serial port" do
+    {:ok, uart} = Circuits.UART.start_link()
+
+    port_name = "/tmp/dummy1"
+
+    # Open serial port before use
+    {:ok, _port_sup} = TTY0TTY.open(port_name)
+
+    assert :ok = Cicuits.UART.open(uart, port_name)
+
+    File.write!([port_name, "-twin"], "howdy!")
+
+    assert_receive {:circuits_uart, ^port_name, "howdy!"}
+  end
+end
+```
