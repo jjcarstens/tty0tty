@@ -8,6 +8,10 @@ defmodule TTY0TTY.MixProject do
       elixir: "~> 1.14",
       compilers: [:elixir_make | Mix.compilers()],
       deps: deps(),
+      dialyzer: [
+        flags: [:missing_return, :extra_return, :unmatched_returns, :error_handling, :underspecs],
+        list_unused_filters: true
+      ],
       make_clean: ["clean"],
       make_targets: ["all"],
       start_permanent: Mix.env() == :prod
@@ -25,6 +29,7 @@ defmodule TTY0TTY.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:dialyxir, "~> 1.1", only: [:dev], runtime: false},
       {:elixir_make, "~> 0.7", runtime: false},
       {:muontrap, "~> 1.0"}
     ]
