@@ -6,7 +6,8 @@ defmodule TTY0TTY.Application do
   @impl Application
   def start(_type, _args) do
     children = [
-      {Registry, keys: :unique, name: Devices}
+      {Registry, keys: :unique, name: Devices},
+      TTY0TTY
     ]
 
     opts = [strategy: :one_for_one, name: TTY0TTY.Supervisor]

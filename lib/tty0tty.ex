@@ -47,6 +47,16 @@ defmodule TTY0TTY do
   end
   ```
   """
+  use DynamicSupervisor
+
+  def start_link(opts \\ []) do
+    DynamicSupervisor.start_link(__MODULE__, opts, name: __MODULE__)
+  end
+
+  @impl true
+  def init(_opts) do
+    DynamicSupervisor.init(strategy: :one_for_one)
+  end
 
   @doc """
   Open a null modem at the specified device path
@@ -60,10 +70,10 @@ defmodule TTY0TTY do
     twin = dev_path <> "-twin"
     tty0tty = Application.app_dir(:tty0tty, ["priv", "tty0tty"])
 
+    opts = Keyword.put(opts, :name, via_name(dev_path))
     cmd = [tty0tty, [dev_path, twin], opts]
-    sup_opts = [strategy: :one_for_one, name: via_name(dev_path)]
 
-    case Supervisor.start_link([{MuonTrap.Daemon, cmd}], sup_opts) do
+    case DynamicSupervisor.start_child(__MODULE__, {MuonTrap.Daemon, cmd}) do
       {:error, {:already_started, _p}} -> :ok
       {:ok, _} -> :ok
       result -> raise "Failed to open tty0tty! - #{inspect(result)}"
@@ -75,10 +85,14 @@ defmodule TTY0TTY do
   """
   @spec close(String.t() | Supervisor.supervisor()) :: :ok
   def close(dev_path) when is_binary(dev_path) do
-    close(via_name(dev_path))
+    close(whereis(dev_path))
   end
 
-  def close(dev), do: Supervisor.stop(dev)
+  def close(dev) when is_pid(dev) do
+    DynamicSupervisor.terminate_child(TTY0TTY, dev)
+  end
+
+  def close(_), do: :ok
 
   @doc """
   List all the currently open tty0tty processes
