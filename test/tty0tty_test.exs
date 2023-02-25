@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2023 Jon Carstens
+#
+# SPDX-License-Identifier: Apache-2.0
+
 defmodule TTY0TTYTest do
   use ExUnit.Case
   doctest TTY0TTY

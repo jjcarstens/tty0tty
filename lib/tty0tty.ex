@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2023 Jon Carstens
+#
+# SPDX-License-Identifier: Apache-2.0
+
 defmodule TTY0TTY do
   @moduledoc """
   `tty0tty` creates 2 pseudo-ttys that are connected together allowing you to

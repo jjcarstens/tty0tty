@@ -8,6 +8,7 @@ defmodule TTY0TTY.MixProject do
       elixir: "~> 1.14",
       compilers: [:elixir_make | Mix.compilers()],
       deps: deps(),
+      description: "Elixir port for tty0tty null modem emulator",
       dialyzer: [
         flags: [:missing_return, :extra_return, :unmatched_returns, :error_handling, :underspecs],
         list_unused_filters: true

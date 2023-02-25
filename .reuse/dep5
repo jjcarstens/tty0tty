@@ -1,0 +1,16 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: tty0tty
+Upstream-Contact: Jon Carstens <jjcarstens@me.com>
+Source: https://github.com/jjcarstens/tty0tty
+
+Files: README.md CHANGELOG.md
+Copyright: 2023 Jon Carstens
+License: CC-BY-4.0
+
+Files: .gitignore
+Copyright: None
+License: CC0-1.0
+
+Files: .formatter.exs mix.lock mix.exs
+Copyright: None
+License: CC0-1.0

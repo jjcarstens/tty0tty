@@ -1,5 +1,7 @@
 # TTY0TTY
 
+[![REUSE status](https://api.reuse.software/badge/github.com/jjcarstens/tty0tty)](https://api.reuse.software/info/github.com/jjcarstens/tty0tty)
+
 Elixir port for [`tty0tty` null modem emulator](https://github.com/freemed/tty0tty)
 
 ## Use

@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2013 Luis Claudio Gambôa Lopes and Maximiliano Pin
+// SPDX-License-Identifier: GPL-2.0-or-later
+
 /* ########################################################################
 
    tty0tty - linux null modem emulator 
