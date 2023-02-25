@@ -4,8 +4,8 @@ defmodule TTY0TTY.MixProject do
   def project do
     [
       app: :tty0tty,
-      version: "0.1.0",
-      elixir: "~> 1.14",
+      version: "1.0.0",
+      elixir: "~> 1.11",
       compilers: [:elixir_make | Mix.compilers()],
       deps: deps(),
       description: "Elixir port for tty0tty null modem emulator",
@@ -15,6 +15,12 @@ defmodule TTY0TTY.MixProject do
       ],
       make_clean: ["clean"],
       make_targets: ["all"],
+      package: package(),
+      preferred_cli_env: %{
+        docs: :docs,
+        "hex.publish": :docs,
+        "hex.build": :docs
+      },
       start_permanent: Mix.env() == :prod
     ]
   end
@@ -32,7 +38,24 @@ defmodule TTY0TTY.MixProject do
     [
       {:dialyxir, "~> 1.1", only: [:dev], runtime: false},
       {:elixir_make, "~> 0.7", runtime: false},
+      {:ex_doc, "~> 0.26", only: :docs, runtime: false},
       {:muontrap, "~> 1.0"}
+    ]
+  end
+
+  defp package do
+    [
+      files: [
+        "c_src",
+        "CHANGELOG.md",
+        "lib",
+        "LICENSES/*",
+        "Makefile",
+        "mix.exs",
+        "README.md"
+      ],
+      links: %{"Github" => "https://github.com/jjcarstens/tty0tty"},
+      licenses: ["Apache-2.0"]
     ]
   end
 end
