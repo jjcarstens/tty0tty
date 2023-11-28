@@ -21,7 +21,7 @@ defmodule SerialTest do
     port_name = "/tmp/dummy1"
 
     # Open serial port before use
-    {:ok, _port_sup} = TTY0TTY.open(port_name)
+    :ok = TTY0TTY.open(port_name)
 
     assert :ok = Cicuits.UART.open(uart, port_name)
   end
@@ -44,7 +44,7 @@ defmodule SerialTest do
     port_name = "/tmp/dummy1"
 
     # Open serial port before use
-    {:ok, _port_sup} = TTY0TTY.open(port_name)
+    :ok = TTY0TTY.open(port_name)
 
     assert :ok = Cicuits.UART.open(uart, port_name)
 
