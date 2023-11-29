@@ -78,10 +78,24 @@ defmodule TTY0TTY do
     cmd = [tty0tty, [dev_path, twin], opts]
 
     case DynamicSupervisor.start_child(__MODULE__, {MuonTrap.Daemon, cmd}) do
-      {:error, {:already_started, _p}} -> :ok
-      {:ok, _} -> :ok
-      result -> raise "Failed to open tty0tty! - #{inspect(result)}"
+      {:error, {:already_started, _p}} ->
+        :ok
+
+      {:ok, _} ->
+        wait_for_paths_to_exist(dev_path, twin)
+        :ok
+
+      result ->
+        raise "Failed to open tty0tty! - #{inspect(result)}"
     end
+  end
+
+  defp wait_for_paths_to_exist(path, twin) do
+    with false <- ensure_paths_exist(path, twin), do: wait_for_paths_to_exist(path, twin)
+  end
+
+  defp ensure_paths_exist(p1, p2) do
+    File.exists?(p1) and File.exists?(p2)
   end
 
   @doc """
