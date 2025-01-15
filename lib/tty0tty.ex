@@ -93,7 +93,9 @@ defmodule TTY0TTY do
   end
 
   def close(dev) when is_pid(dev) do
-    DynamicSupervisor.terminate_child(TTY0TTY, dev)
+    # Either :ok or {:error, :not_found}. Either way, job done
+    _ = DynamicSupervisor.terminate_child(TTY0TTY, dev)
+    :ok
   end
 
   def close(_), do: :ok
