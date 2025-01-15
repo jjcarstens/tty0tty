@@ -36,6 +36,7 @@ defmodule TTY0TTY.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:circuits_uart, "~> 1.0", only: [:dev, :test]},
       {:dialyxir, "~> 1.1", only: [:dev], runtime: false},
       {:elixir_make, "~> 0.7", runtime: false},
       {:ex_doc, "~> 0.26", only: :docs, runtime: false},

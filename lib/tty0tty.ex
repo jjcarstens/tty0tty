@@ -65,22 +65,55 @@ defmodule TTY0TTY do
   @doc """
   Open a null modem at the specified device path
 
-  Note: Some systems heavily restrict the `/dev` path and attempting to open
-  a device there would fail without elevated privileges. Consider opening
-  devices in other places with user access, such as `/tmp` or `/mnt`
+  Supports MuonTrap options for customizing the modem startup.
+  See `MuonTrap.Options` for supported options.
+
+  Creating the modem takes a variable amount of time across systems,
+  so this blocks until the devices are confirmed open. This timing
+  can be controlled with a `:timeout` option in milliseconds (default 5000)
+
+  > #### File Permissions {: .info}
+  > Some systems heavily restrict the `/dev` path and attempting to open
+  > a device there would fail without elevated privileges. Consider opening
+  > devices in other places with user access, such as `/tmp` or `/mnt`
   """
-  @spec open(String.t(), keyword()) :: :ok
+  @spec open(String.t(), keyword()) :: :ok | {:error, :enoent}
   def open(dev_path, opts \\ []) do
     twin = dev_path <> "-twin"
     tty0tty = Application.app_dir(:tty0tty, ["priv", "tty0tty"])
+    {timeout, opts} = Keyword.pop(opts, :timeout, 5000)
 
     opts = Keyword.put(opts, :name, via_name(dev_path))
     cmd = [tty0tty, [dev_path, twin], opts]
 
     case DynamicSupervisor.start_child(__MODULE__, {MuonTrap.Daemon, cmd}) do
-      {:error, {:already_started, _p}} -> :ok
-      {:ok, _} -> :ok
-      result -> raise "Failed to open tty0tty! - #{inspect(result)}"
+      {:error, {:already_started, _p}} ->
+        :ok
+
+      {:ok, _} ->
+        wait_for_paths_to_exist(dev_path, twin, timeout)
+
+      result ->
+        raise "Failed to open tty0tty! - #{inspect(result)}"
+    end
+  end
+
+  defp wait_for_paths_to_exist(
+         dev_path,
+         twin,
+         timeout,
+         start \\ System.monotonic_time(:millisecond)
+       ) do
+    cond do
+      File.exists?(dev_path) and File.exists?(twin) ->
+        :ok
+
+      System.monotonic_time(:millisecond) - start >= timeout ->
+        close(dev_path)
+        {:error, :enoent}
+
+      true ->
+        wait_for_paths_to_exist(dev_path, twin, timeout, start)
     end
   end
 
