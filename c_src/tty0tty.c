@@ -3,7 +3,7 @@
 
 /* ########################################################################
 
-   tty0tty - linux null modem emulator 
+   tty0tty - linux null modem emulator
 
    ########################################################################
 
@@ -30,16 +30,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <termios.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/select.h>
 #include <errno.h>
-
-#ifdef __APPLE__
-#include <term.h>
-#else
-#include <termio.h>
-#endif
 
 static char buffer[1024];
 
@@ -55,26 +50,26 @@ ptym_open(char *pts_name, char *pts_name_s , int pts_namesz)
     fdm = posix_openpt(O_RDWR | O_NONBLOCK);
     if (fdm < 0)
         return(-1);
-    if (grantpt(fdm) < 0) 
+    if (grantpt(fdm) < 0)
     {
         close(fdm);
         return(-2);
     }
-    if (unlockpt(fdm) < 0) 
+    if (unlockpt(fdm) < 0)
     {
         close(fdm);
         return(-3);
     }
-    if ((ptr = ptsname(fdm)) == NULL) 
+    if ((ptr = ptsname(fdm)) == NULL)
     {
         close(fdm);
         return(-4);
     }
-    
+
     strncpy(pts_name_s, ptr, pts_namesz);
     pts_name[pts_namesz - 1] = '\0';
 
-    return(fdm);        
+    return(fdm);
 }
 
 
