@@ -16,11 +16,6 @@ defmodule TTY0TTY.MixProject do
       make_clean: ["clean"],
       make_targets: ["all"],
       package: package(),
-      preferred_cli_env: %{
-        docs: :docs,
-        "hex.publish": :docs,
-        "hex.build": :docs
-      },
       start_permanent: Mix.env() == :prod
     ]
   end
@@ -33,6 +28,16 @@ defmodule TTY0TTY.MixProject do
     ]
   end
 
+  def cli do
+    [
+      preferred_envs: %{
+        docs: :docs,
+        "hex.publish": :docs,
+        "hex.build": :docs
+      }
+    ]
+  end
+
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
@@ -40,7 +45,7 @@ defmodule TTY0TTY.MixProject do
       {:dialyxir, "~> 1.1", only: [:dev], runtime: false},
       {:elixir_make, "~> 0.7", runtime: false},
       {:ex_doc, "~> 0.26", only: :docs, runtime: false},
-      {:muontrap, "~> 1.0"}
+      {:muontrap, ">= 1.0.0"}
     ]
   end
 
