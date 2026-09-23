@@ -4,7 +4,7 @@ defmodule TTY0TTY.MixProject do
   def project do
     [
       app: :tty0tty,
-      version: "1.0.2",
+      version: "1.0.3",
       elixir: "~> 1.11",
       compilers: [:elixir_make | Mix.compilers()],
       deps: deps(),
